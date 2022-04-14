@@ -96,7 +96,7 @@ open class RxTableViewSectionedAnimatedDataSource<Section: AnimatableSectionMode
                 do {
                     var differences = try Diff.differencesForSectionedView(initialSections: oldSections, finalSections: newSections)
                     
-                    switch dataSource.decideViewTransition(dataSource, collectionView, differences) {
+                    switch dataSource.decideViewTransition(dataSource, tableView, differences) {
                     case .insertFirstAnimated:
                         differences.reverse()
                         fallthrough
