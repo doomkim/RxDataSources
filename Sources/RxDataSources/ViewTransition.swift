@@ -10,6 +10,8 @@
 public enum ViewTransition {
     /// animated transition
     case animated
+    /// insert first animated transition
+    case insertFirstAnimated
     /// refresh view without animations
     case reload
 }

@@ -94,9 +94,12 @@ open class RxTableViewSectionedAnimatedDataSource<Section: AnimatableSectionMode
                 }
                 let oldSections = dataSource.sectionModels
                 do {
-                    let differences = try Diff.differencesForSectionedView(initialSections: oldSections, finalSections: newSections)
+                    var differences = try Diff.differencesForSectionedView(initialSections: oldSections, finalSections: newSections)
                     
-                    switch dataSource.decideViewTransition(dataSource, tableView, differences) {
+                    switch dataSource.decideViewTransition(dataSource, collectionView, differences) {
+                    case .insertFirstAnimated:
+                        differences.reverse()
+                        fallthrough
                     case .animated:
                         // each difference must be run in a separate 'performBatchUpdates', otherwise it crashes.
                         // this is a limitation of Diff tool
