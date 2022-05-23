@@ -68,12 +68,18 @@ open class RxCollectionViewSectionedAnimatedDataSource<Section: AnimatableSectio
                 }
                 let oldSections = dataSource.sectionModels
                 do {
-                    var differences = try Diff.differencesForSectionedView(initialSections: oldSections, finalSections: newSections)
+                    let differences = try Diff.differencesForSectionedView(initialSections: oldSections, finalSections: newSections)
                     
                     switch dataSource.decideViewTransition(dataSource, collectionView, differences) {
                     case .insertFirstAnimated:
-                        differences.reverse()
-                        fallthrough
+                        let updateBlock = {
+                            for difference in differences {
+                                // sections must be set within updateBlock in 'performBatchUpdates'
+                                dataSource.setSections(difference.finalSections)
+                                collectionView.batchUpdates(difference, animationConfiguration: dataSource.animationConfiguration)
+                            }
+                        }
+                        collectionView.performBatchUpdates(updateBlock, completion: nil)
                     case .animated:
                         // each difference must be run in a separate 'performBatchUpdates', otherwise it crashes.
                         // this is a limitation of Diff tool
